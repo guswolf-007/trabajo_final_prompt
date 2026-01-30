@@ -1,0 +1,21 @@
+# Created by venv; see https://docs.python.org/3/library/venv.html
+
+#entornos virtuales
+venv/
+.venv/
+
+#python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+#macOS
+.DS_Store
+
+#variables de entorno / secretos
+.env
+.env.*
+

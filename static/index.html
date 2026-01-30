@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Comparador de Bancos Online</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero__inner container">
+      <h1 class="hero__title">Comparador de Bancos Online</h1>
+      <p class="hero__subtitle">
+        Compara tarjetas de crédito, beneficios y descuentos de los principales bancos de Chile.
+        Encuentra la mejor opción para ti.
+      </p>
+
+      <div class="hero__actions">
+        <button class="btn btn--primary" id="btnCompare">Comparar Ahora</button>
+        <button class="btn btn--ghost" id="btnAsk">Pregunta al Asistente</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section container" id="seleccion">
+      <h2 class="section__title">Selecciona los Bancos</h2>
+      <p class="section__desc">
+        Haz clic en los bancos que deseas comparar. Puedes seleccionar uno o más para ver
+        sus tarjetas, beneficios y descuentos.
+      </p>
+
+      <div class="grid">
+        <!-- Banco de Chile -->
+        <article class="card bank" data-bank="bchile" role="button" tabindex="0" aria-pressed="true">
+          <div class="bank__top">
+            <div class="bank__brand">
+              <img class="bank__logo" src="assets/icons/logo-bchile.svg" alt="Banco de Chile" />
+              <div>
+                <h3 class="bank__name">B. Chile</h3>
+                <div class="bank__sub">Banco de Chile</div>
+              </div>
+            </div>
+            <span class="pill pill--selected"><span class="dot"></span>Seleccionado</span>
+          </div>
+
+          <p class="bank__about">
+            Uno de los bancos más grandes y tradicionales de Chile, con amplia cobertura nacional.
+          </p>
+
+          <div class="bank__section">
+            <div class="bank__sectionTitle">
+              <img src="assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
+              <span>Principales Beneficios</span>
+            </div>
+            <ul class="list list--red">
+              <li>Red de más de 400 sucursales</li>
+              <li>App móvil premiada</li>
+              <li>Atención 24/7</li>
+            </ul>
+          </div>
+
+          <div class="bank__footer">
+            <img src="assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
+            <span><strong>3</strong> descuentos disponibles</span>
+          </div>
+        </article>
+
+        <!-- Falabella -->
+        <article class="card bank" data-bank="falabella" role="button" tabindex="0" aria-pressed="true">
+          <div class="bank__top">
+            <div class="bank__brand">
+              <img class="bank__logo" src="assets/icons/logo-falabella.svg" alt="Banco Falabella" />
+              <div>
+                <h3 class="bank__name">Falabella</h3>
+                <div class="bank__sub">Banco Falabella</div>
+              </div>
+            </div>
+            <span class="pill pill--selected"><span class="dot"></span>Seleccionado</span>
+          </div>
+
+          <p class="bank__about">
+            Banco retail con fuertes beneficios en el ecosistema Falabella.
+          </p>
+
+          <div class="bank__section">
+            <div class="bank__sectionTitle">
+              <img src="assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
+              <span>Principales Beneficios</span>
+            </div>
+            <ul class="list list--green">
+              <li>Sin comisión de mantención</li>
+              <li>Puntos CMR canjeables</li>
+              <li>Amplia red retail</li>
+            </ul>
+          </div>
+
+          <div class="bank__footer">
+            <img src="assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
+            <span><strong>3</strong> descuentos disponibles</span>
+          </div>
+        </article>
+
+        <!-- Santander -->
+        <article class="card bank" data-bank="santander" role="button" tabindex="0" aria-pressed="true">
+          <div class="bank__top">
+            <div class="bank__brand">
+              <img class="bank__logo" src="assets/icons/logo-santander.svg" alt="Banco Santander" />
+              <div>
+                <h3 class="bank__name">Santander</h3>
+                <div class="bank__sub">Banco Santander</div>
+              </div>
+            </div>
+            <span class="pill pill--selected"><span class="dot"></span>Seleccionado</span>
+          </div>
+
+          <p class="bank__about">
+            Banco global con presencia sólida en Chile y beneficios internacionales.
+          </p>
+
+          <div class="bank__section">
+            <div class="bank__sectionTitle">
+              <img src="assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
+              <span>Principales Beneficios</span>
+            </div>
+            <ul class="list list--red">
+              <li>Presencia global</li>
+              <li>Programa Superclub</li>
+              <li>Cuenta joven sin costos</li>
+            </ul>
+          </div>
+
+          <div class="bank__footer">
+            <img src="assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
+            <span><strong>3</strong> descuentos disponibles</span>
+          </div>
+        </article>
+
+        <!-- BCI -->
+        <article class="card bank" data-bank="bci" role="button" tabindex="0" aria-pressed="true">
+          <div class="bank__top">
+            <div class="bank__brand">
+              <img class="bank__logo" src="assets/icons/logo-bci.svg" alt="Banco BCI" />
+              <div>
+                <h3 class="bank__name">BCI</h3>
+                <div class="bank__sub">Banco BCI</div>
+              </div>
+            </div>
+            <span class="pill pill--selected"><span class="dot"></span>Seleccionado</span>
+          </div>
+
+          <p class="bank__about">
+            Banco innovador chileno con fuerte enfoque en tecnología y servicio al cliente.
+          </p>
+
+          <div class="bank__section">
+            <div class="bank__sectionTitle">
+              <img src="assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
+              <span>Principales Beneficios</span>
+            </div>
+            <ul class="list list--blue">
+              <li>Mejor servicio al cliente</li>
+              <li>App MACH integrada</li>
+              <li>Cuentas digitales</li>
+            </ul>
+          </div>
+
+          <div class="bank__footer">
+            <img src="assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
+            <span><strong>3</strong> descuentos disponibles</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section section--muted" id="comparacion">
+      <div class="container">
+        <h2 class="section__title">Comparación Detallada</h2>
+        <p class="section__desc">Explora las tarjetas de crédito, descuentos y beneficios de los bancos seleccionados.</p>
+
+        <div class="tabs" role="tablist" aria-label="Comparación">
+          <button class="tab is-active" role="tab" aria-selected="true" data-tab="cards">
+            <img src="assets/icons/icon-creditcard.svg" alt="" aria-hidden="true" />
+            <span>Tarjetas de Crédito</span>
+          </button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="discounts">
+            <img src="assets/icons/icon-percent.svg" alt="" aria-hidden="true" />
+            <span>Descuentos</span>
+          </button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="benefits">
+            <img src="assets/icons/icon-gift.svg" alt="" aria-hidden="true" />
+            <span>Beneficios</span>
+          </button>
+        </div>
+
+        <div class="panel is-active" id="panel-cards" role="tabpanel">
+          <div class="tableWrap">
+            <table class="table" aria-label="Comparación de tarjetas">
+              <thead>
+                <tr>
+                  <th>Tarjeta</th>
+                  <th class="th th--bchile">B. Chile</th>
+                  <th class="th th--falabella">Falabella</th>
+                  <th class="th th--santander">Santander</th>
+                  <th class="th th--bci">BCI</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="rowLabel">Premium</td>
+
+                  <td class="cell" data-for="bchile">
+                    <div class="cell__title">Tarjeta Travel</div>
+                    <div class="cell__meta">Costo anual: $45.000</div>
+                    <div class="cell__highlight">1 milla por cada $1.000</div>
+                  </td>
+
+                  <td class="cell" data-for="falabella">
+                    <div class="cell__title">CMR Visa</div>
+                    <div class="cell__meta">Costo anual: $0</div>
+                    <div class="cell__highlight">Hasta 4% en Puntos CMR</div>
+                  </td>
+
+                  <td class="cell" data-for="santander">
+                    <div class="cell__title">Santander Black</div>
+                    <div class="cell__meta">Costo anual: $150.000</div>
+                    <div class="cell__highlight">2 millas por cada $1.000</div>
+                  </td>
+
+                  <td class="cell" data-for="bci">
+                    <div class="cell__title">BCI Visa Signature</div>
+                    <div class="cell__meta">Costo anual: $60.000</div>
+                    <div class="cell__highlight">1.5 millas por cada $1.000</div>
+                  </td>
+                </tr>
+
+                <tr>
+                  <td class="rowLabel">Básica</td>
+
+                  <td class="cell" data-for="bchile">
+                    <div class="cell__title">Tarjeta Clásica</div>
+                    <div class="cell__meta">Costo anual: $0 primer año</div>
+                    <div class="cell__highlight">1% en compras</div>
+                  </td>
+
+                  <td class="cell" data-for="falabella">
+                    <div class="cell__title">CMR Mastercard</div>
+                    <div class="cell__meta">Costo anual: $0</div>
+                    <div class="cell__highlight">3% en restaurantes</div>
+                  </td>
+
+                  <td class="cell" data-for="santander">
+                    <div class="cell__title">Santander Life</div>
+                    <div class="cell__meta">Costo anual: $25.000</div>
+                    <div class="cell__highlight">2% en streaming</div>
+                  </td>
+
+                  <td class="cell" data-for="bci">
+                    <div class="cell__title">BCI Plus</div>
+                    <div class="cell__meta">Costo anual: $15.000</div>
+                    <div class="cell__highlight">1.5% general</div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-discounts" role="tabpanel" hidden>
+          <div class="placeholder">
+            <h3>Descuentos</h3>
+            <p>
+              Esta pestaña está lista para que cargues descuentos reales (por ejemplo: combustibles, restaurantes,
+              tiendas, viajes). En una versión dinámica, esta info vendría desde una API o JSON.
+            </p>
+          </div>
+        </div>
+
+        <div class="panel" id="panel-benefits" role="tabpanel" hidden>
+          <div class="placeholder">
+            <h3>Beneficios</h3>
+            <p>
+              Aquí puedes listar beneficios por banco: acumulación de puntos/millas, salas VIP, seguros, asistencia,
+              etc. Mantuvimos la estructura para que se vea igual y sea fácil de extender.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section container" id="dudas">
+      <h2 class="section__title">¿Tienes Dudas?</h2>
+      <p class="section__desc">
+        Nuestro asistente con inteligencia artificial puede ayudarte a resolver cualquier pregunta sobre bancos y tarjetas en Chile.
+      </p>
+
+      <div class="assistant">
+        <div class="assistant__header">
+          <div class="assistant__badge">
+            <img src="assets/icons/icon-chat.svg" alt="" aria-hidden="true" />
+          </div>
+          <div>
+            <div class="assistant__title">Asistente Bancario</div>
+            <div class="assistant__sub">Pregunta sobre bancos y tarjetas</div>
+          </div>
+        </div>
+
+        <div class="assistant__body">
+          <div class="assistant__robot">
+            <img src="assets/icons/icon-robot.svg" alt="" aria-hidden="true" />
+          </div>
+          <p class="assistant__msg">
+            ¡Hola! Soy tu asistente bancario. Puedo ayudarte a comparar bancos, entender beneficios de tarjetas y
+            resolver tus dudas financieras.
+          </p>
+        </div>
+
+        <form class="assistant__input" action="http://127.0.0.1:8000/" >
+          <input type="text" placeholder="Escribe tu pregunta..." aria-label="Escribe tu pregunta" />
+          <button class="btn btn--mini" type="button" aria-label="Enviar">
+            <img src="assets/icons/icon-send.svg" alt="" aria-hidden="true" />
+          </button>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">Página estática de ejemplo • Hecha con HTML/CSS/JS (sin frameworks)</div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
