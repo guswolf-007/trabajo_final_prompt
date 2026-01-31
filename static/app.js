@@ -1,4 +1,5 @@
 // Tabs
+//const API_URL = "/chat"; 
 const tabs = document.querySelectorAll('.tab');
 const panels = {
   cards: document.getElementById('panel-cards'),

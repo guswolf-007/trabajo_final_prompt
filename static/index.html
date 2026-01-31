@@ -4,7 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Comparador de Bancos Online</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="/static/styles.css" />
+  <script src="/static/app.js" defer></script>
+  <!--img src="/static/assets/icons/icon-chat.svg"-->
 </head>
 <body>
   <header class="hero">
@@ -35,7 +37,7 @@
         <article class="card bank" data-bank="bchile" role="button" tabindex="0" aria-pressed="true">
           <div class="bank__top">
             <div class="bank__brand">
-              <img class="bank__logo" src="assets/icons/logo-bchile.svg" alt="Banco de Chile" />
+              <img class="bank__logo" src="/static/assets/icons/logo-bchile.svg" alt="Banco de Chile" />
               <div>
                 <h3 class="bank__name">B. Chile</h3>
                 <div class="bank__sub">Banco de Chile</div>
@@ -50,7 +52,7 @@
 
           <div class="bank__section">
             <div class="bank__sectionTitle">
-              <img src="assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
+              <img src="/static/assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
               <span>Principales Beneficios</span>
             </div>
             <ul class="list list--red">
@@ -61,7 +63,7 @@
           </div>
 
           <div class="bank__footer">
-            <img src="assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
+            <img src="/static/assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
             <span><strong>3</strong> descuentos disponibles</span>
           </div>
         </article>
@@ -70,7 +72,7 @@
         <article class="card bank" data-bank="falabella" role="button" tabindex="0" aria-pressed="true">
           <div class="bank__top">
             <div class="bank__brand">
-              <img class="bank__logo" src="assets/icons/logo-falabella.svg" alt="Banco Falabella" />
+              <img class="bank__logo" src="/static/assets/icons/logo-falabella.svg" alt="Banco Falabella" />
               <div>
                 <h3 class="bank__name">Falabella</h3>
                 <div class="bank__sub">Banco Falabella</div>
@@ -85,7 +87,7 @@
 
           <div class="bank__section">
             <div class="bank__sectionTitle">
-              <img src="assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
+              <img src="/static/assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
               <span>Principales Beneficios</span>
             </div>
             <ul class="list list--green">
@@ -96,7 +98,7 @@
           </div>
 
           <div class="bank__footer">
-            <img src="assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
+            <img src="/static/assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
             <span><strong>3</strong> descuentos disponibles</span>
           </div>
         </article>
@@ -105,7 +107,7 @@
         <article class="card bank" data-bank="santander" role="button" tabindex="0" aria-pressed="true">
           <div class="bank__top">
             <div class="bank__brand">
-              <img class="bank__logo" src="assets/icons/logo-santander.svg" alt="Banco Santander" />
+              <img class="bank__logo" src="/static/assets/icons/logo-santander.svg" alt="Banco Santander" />
               <div>
                 <h3 class="bank__name">Santander</h3>
                 <div class="bank__sub">Banco Santander</div>
@@ -120,7 +122,7 @@
 
           <div class="bank__section">
             <div class="bank__sectionTitle">
-              <img src="assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
+              <img src="/static/assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
               <span>Principales Beneficios</span>
             </div>
             <ul class="list list--red">
@@ -131,7 +133,7 @@
           </div>
 
           <div class="bank__footer">
-            <img src="assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
+            <img src="/static/assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
             <span><strong>3</strong> descuentos disponibles</span>
           </div>
         </article>
@@ -140,7 +142,7 @@
         <article class="card bank" data-bank="bci" role="button" tabindex="0" aria-pressed="true">
           <div class="bank__top">
             <div class="bank__brand">
-              <img class="bank__logo" src="assets/icons/logo-bci.svg" alt="Banco BCI" />
+              <img class="bank__logo" src="/static/assets/icons/logo-bci.svg" alt="Banco BCI" />
               <div>
                 <h3 class="bank__name">BCI</h3>
                 <div class="bank__sub">Banco BCI</div>
@@ -155,7 +157,7 @@
 
           <div class="bank__section">
             <div class="bank__sectionTitle">
-              <img src="assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
+              <img src="/static/assets/icons/icon-bolt.svg" alt="" aria-hidden="true" />
               <span>Principales Beneficios</span>
             </div>
             <ul class="list list--blue">
@@ -166,7 +168,7 @@
           </div>
 
           <div class="bank__footer">
-            <img src="assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
+            <img src="/static/assets/icons/icon-bell.svg" alt="" aria-hidden="true" />
             <span><strong>3</strong> descuentos disponibles</span>
           </div>
         </article>
@@ -180,15 +182,15 @@
 
         <div class="tabs" role="tablist" aria-label="Comparación">
           <button class="tab is-active" role="tab" aria-selected="true" data-tab="cards">
-            <img src="assets/icons/icon-creditcard.svg" alt="" aria-hidden="true" />
+            <img src="/static/assets/icons/icon-creditcard.svg" alt="" aria-hidden="true" />
             <span>Tarjetas de Crédito</span>
           </button>
           <button class="tab" role="tab" aria-selected="false" data-tab="discounts">
-            <img src="assets/icons/icon-percent.svg" alt="" aria-hidden="true" />
+            <img src="/static/assets/icons/icon-percent.svg" alt="" aria-hidden="true" />
             <span>Descuentos</span>
           </button>
           <button class="tab" role="tab" aria-selected="false" data-tab="benefits">
-            <img src="assets/icons/icon-gift.svg" alt="" aria-hidden="true" />
+            <img src="/static/assets/icons/icon-gift.svg" alt="" aria-hidden="true" />
             <span>Beneficios</span>
           </button>
         </div>
@@ -297,7 +299,7 @@
       <div class="assistant">
         <div class="assistant__header">
           <div class="assistant__badge">
-            <img src="assets/icons/icon-chat.svg" alt="" aria-hidden="true" />
+            <img src="/static/assets/icons/icon-chat.svg" alt="" aria-hidden="true" />
           </div>
           <div>
             <div class="assistant__title">Asistente Bancario</div>
@@ -307,7 +309,7 @@
 
         <div class="assistant__body">
           <div class="assistant__robot">
-            <img src="assets/icons/icon-robot.svg" alt="" aria-hidden="true" />
+            <img src="/static/assets/icons/icon-robot.svg" alt="" aria-hidden="true" />
           </div>
           <p class="assistant__msg">
             ¡Hola! Soy tu asistente bancario. Puedo ayudarte a comparar bancos, entender beneficios de tarjetas y
@@ -315,10 +317,10 @@
           </p>
         </div>
 
-        <form class="assistant__input" action="http://127.0.0.1:8000/" >
+        <form class="assistant__input" onsubmit="return false;" >
           <input type="text" placeholder="Escribe tu pregunta..." aria-label="Escribe tu pregunta" />
           <button class="btn btn--mini" type="button" aria-label="Enviar">
-            <img src="assets/icons/icon-send.svg" alt="" aria-hidden="true" />
+            <img src="/static/assets/icons/icon-send.svg" alt="" aria-hidden="true" />
           </button>
         </form>
       </div>
@@ -329,6 +331,6 @@
     <div class="container">Página estática de ejemplo • Hecha con HTML/CSS/JS (sin frameworks)</div>
   </footer>
 
-  <script src="app.js"></script>
+  <script src="/static/app.js"></script>
 </body>
 </html>

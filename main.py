@@ -138,12 +138,13 @@ def on_startup() -> None:
 # -----------------------------
 # Routes
 # -----------------------------
+# Respuesta a health check
 @app.get("/health")
 def health() -> Dict[str, Any]:
     return {"ok": True, "app": "adv-test", "model": MODEL}
 
+# Respuesta a request via web
 @app.get("/")
-
 def home():
     return FileResponse("static/index.html")
     
@@ -155,7 +156,7 @@ def root():
         "endpoints": ["/health", "/chat", "/docs"] }
     
 
-
+# respuesta al chat de chatGPT
 @app.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest) -> ChatResponse:
     if client is None:
