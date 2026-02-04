@@ -83,3 +83,178 @@ document.getElementById('btnAsk')?.addEventListener('click', () => {
 });
 
 syncTable();
+
+
+function timeNow(){
+  return new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}
+
+function addUserMessage(text){
+  const chat = document.getElementById("chat-messages");
+  if (!chat) return;
+
+  const row = document.createElement("div");
+  row.className = "chat-msg user";
+
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble";
+  bubble.textContent = text;
+
+  row.appendChild(bubble);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function addBotMessage(initialText = ""){
+  const chat = document.getElementById("chat-messages");
+  if (!chat) return null;
+   
+
+  const row = document.createElement("div");
+  row.className = "chat-msg bot";
+
+  const bubble = document.createElement("div");
+  bubble.className = "chat-bubble";
+  bubble.textContent = initialText;
+
+  row.appendChild(bubble);
+  chat.appendChild(row);
+  chat.scrollTop = chat.scrollHeight;
+
+  // 👇 IMPORTANTE: devolvemos la burbuja para streaming
+  return bubble;
+}
+
+
+
+// ************************** invocar /chat_stream con streaming ******************************
+
+const form = document.getElementById("chat-form");
+const input = document.getElementById("chat-input");
+//const botEl = addBotMessage("") || { textContent: "" };
+//const botEl = addBotMessage("");
+
+const botEl = "" || { textContent: "" };
+
+
+// session fija  ( temporal, esto despues lo vamos a cambiar)
+//const SESSION_ID = "web-session-1";
+
+// Generacion de SESSION_ID persistente . Con esto cada usuario tiene su propia sesión.
+// Si el usuario recarga la página, el contexto se mantiene. no necesita login ni cookies.
+// La sesion generada con la clase JS Crypto es de este tipo: 
+// SESSION_ID: '0bcf40c0-84e1-4aa7-9299-d40a451e0e5d
+
+let SESSION_ID = localStorage.getItem("session_id");
+
+if (!SESSION_ID) {
+  SESSION_ID = crypto.randomUUID();
+  localStorage.setItem("session_id", SESSION_ID);
+}
+
+
+// ************************** invocar /chat_stream con streaming ******************************
+
+if (form && input) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = "";
+    input.focus();
+
+    // 1) pinta el mensaje del usuario
+    addUserMessage(text);
+
+    // 2) contenedor del bot (vacío) para ir escribiendo
+    const botEl = addBotMessage("");
+    botEl.innerHTML = `
+     <span class="typing">
+       <span></span><span></span><span></span>
+     </span>`;
+
+    try {
+      const res = await fetch("/chat_stream", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session_id: SESSION_ID,
+          message: text,
+          temperature: 0.7,
+          max_output_tokens: 500
+        })
+      });
+
+      if (!res.ok || !res.body) {
+        const err = await res.text().catch(() => "");
+        botEl.textContent = `❌ Error HTTP ${res.status} ${err}`;
+        return;
+      }
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+
+        // eventos SSE separados por línea en blanco
+        const events = buffer.split("\n\n");
+        buffer = events.pop();
+
+        for (const evt of events) {
+          const line = evt.trim();
+          if (!line.startsWith("data:")) continue;
+
+          const jsonStr = line.replace(/^data:\s*/, "");
+          let msg;
+          try {
+            msg = JSON.parse(jsonStr);
+          } catch {
+            continue;
+          }
+
+          if (msg.type === "chunk") {
+             if (botEl.querySelector(".typing")){
+              botEl.textContent = ""; 
+             }
+            
+            botEl.textContent += msg.text;
+
+            // autoscroll suave
+            const chat = document.getElementById("chat-messages"); 
+            chat.scrollTop =chat.scrollHeight;
+
+            //botEl.scrollIntoView({ behavior: "smooth", block: "end" });  
+          } else if (msg.type === "error") {
+            botEl.textContent += `\n❌ ${msg.message}`;
+          } else if (msg.type === "done") {
+            // opcional: algo visual al terminar
+          }
+        }
+      }
+    } catch (err) {
+      botEl.textContent = `❌ ${err?.message || String(err)}`;
+    }
+  });
+} else {
+  console.warn("No se encontró #chat-form o #chat-input. Revisa IDs en index.html.");
+}
+
+
+
+form?.addEventListener("submit", () => {
+  console.log("submit detectado ✅");
+});
+
+window.addEventListener("load", () => {
+  addBotMessage("¡Hola! 👋 Soy tu asistente bancario. ¿En qué te ayudo hoy?");
+});
+
+
+console.log("app.js cargado OK");

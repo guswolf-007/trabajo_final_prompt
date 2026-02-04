@@ -303,11 +303,12 @@
           </div>
           <div>
             <div class="assistant__title">Asistente Bancario</div>
-            <div class="assistant__sub">Pregunta sobre bancos y tarjetas</div>
+            <div class="assistant__sub">Pregunta sobre bancos en Chile, entedender beneficios de tarjetas y resolver tus dudas. </div>
           </div>
         </div>
 
-        <div class="assistant__body">
+        
+        <!--div class="assistant__body">
           <div class="assistant__robot">
             <img src="/static/assets/icons/icon-robot.svg" alt="" aria-hidden="true" />
           </div>
@@ -315,22 +316,27 @@
             ¡Hola! Soy tu asistente bancario. Puedo ayudarte a comparar bancos, entender beneficios de tarjetas y
             resolver tus dudas financieras.
           </p>
-        </div>
+        </div-->
 
-        <form class="assistant__input" onsubmit="return false;" >
-          <input type="text" placeholder="Escribe tu pregunta..." aria-label="Escribe tu pregunta" />
-          <button class="btn btn--mini" type="button" aria-label="Enviar">
-            <img src="/static/assets/icons/icon-send.svg" alt="" aria-hidden="true" />
-          </button>
-        </form>
+        <div class="assistant__messages" id="chat-messages"></div>
+
+          <form class="assistant__input" id="chat-form">
+            <input id="chat-input" type="text" placeholder="Escribe tu pregunta..." aria-label="Escribe tu pregunta" autocomplete="off"/>
+            <button class="btn btn--mini" type="submit" aria-label="Enviar">
+              <img src="/static/assets/icons/icon-send.svg" alt="" aria-hidden="true" />
+            </button>
+          </form>
+          
+        
+        
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <div class="container">Página estática de ejemplo • Hecha con HTML/CSS/JS (sin frameworks)</div>
+    <div class="container">© 2026 Comparador de Bancos Online • Información entregada con fines educativos.</div>
   </footer>
 
-  <script src="/static/app.js"></script>
+
 </body>
 </html>

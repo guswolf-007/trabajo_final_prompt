@@ -29,20 +29,22 @@ from openai import OpenAI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+#************** Para agregar SSE(SErver Sent Events) con Streaming Response *********
+# ************* Aqui se va a generar un endpoint nuevo : /chat_stream ***************
+from fastapi.responses import StreamingResponse
+import json
 
+# ************* Config File ******************** 
+from config import OPENAI_API_KEY, OPENAI_MODEL
 
-
-#------------------------------------------------
 # -----------------------------
-# Config
-# -----------------------------
-MODEL = "gpt-4o"
+#MODEL = "gpt-4o"
 MAX_TURNS_PER_SESSION = 20  # ajusta si quieres más/menos memoria
 SYSTEM_PROMPT = (
-    "Eres un asistente útil, directo y amable experto en información de los bancos en Chile. "
+    "Eres un asistente útil, directo, amable y experto en información de los bancos en Chile. "
     "Responde en español a menos que el usuario pida otro idioma. "
     "Si falta información, haz preguntas concretas. "
-    "Si el usuario pide código fuente, indicale amablemente que ese no es tu rol o función."
+    "Si el usuario pide información de otros temas que no sean relacionados a bancos en Chile o código fuente, indicale amablemente que ese no es tu rol o función."
 )
 
 # -----------------------------
@@ -79,7 +81,9 @@ class ChatResponse(BaseModel):
 # Helpers
 # -----------------------------
 def require_api_key() -> str:
-    api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+    
+    api_key = (OPENAI_API_KEY or "").strip()
+    #api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError(
             "No se encontró OPENAI_API_KEY. "
@@ -114,7 +118,8 @@ def call_openai_chat(
 ) -> str:
     try:
         resp = client.chat.completions.create(
-            model=MODEL,
+            #model=MODEL,
+            model = OPENAI_MODEL, 
             messages=messages,
             temperature=temperature,
             max_tokens=max_output_tokens,
@@ -128,11 +133,13 @@ def call_openai_chat(
 # -----------------------------
 # Lifecycle
 # -----------------------------
+
 @app.on_event("startup")
-def on_startup() -> None:
+def on_startup():
     global client
-    require_api_key()
-    client = OpenAI()  # toma OPENAI_API_KEY automáticamente 
+    if not OPENAI_API_KEY:
+        raise RuntimeError("OPENAI_API_KEY no configurada")
+    client = OpenAI(api_key=OPENAI_API_KEY)
 
 
 # -----------------------------
@@ -141,9 +148,11 @@ def on_startup() -> None:
 # Respuesta a health check
 @app.get("/health")
 def health() -> Dict[str, Any]:
-    return {"ok": True, "app": "adv-test", "model": MODEL}
+    #return {"ok": True, "app": "adv-test", "model": MODEL}
+    return {"ok": True, "app": "adv-test", "model": OPENAI_MODEL}
 
-# Respuesta a request via web
+
+# ************* Respuesta a request http : se entrega index.html *********************
 @app.get("/")
 def home():
     return FileResponse("static/index.html")
@@ -153,10 +162,10 @@ def root():
     #return {"ok":True, "endpoints":["/docs","/health","/chat"] }
     return {
         "message": "Uvicorn está corriendo correctamente",
-        "endpoints": ["/health", "/chat", "/docs"] }
+        "endpoints": ["/health", "/chat","/chat_stream", "/docs"] }
     
 
-# respuesta al chat de chatGPT
+# ************** Respuesta al chat de chatGPT ***************************************
 @app.post("/chat", response_model=ChatResponse)
 def chat(req: ChatRequest) -> ChatResponse:
     if client is None:
@@ -182,6 +191,49 @@ def chat(req: ChatRequest) -> ChatResponse:
     return ChatResponse(
         session_id=req.session_id,
         reply=reply,
-        model=MODEL,
+        #model=MODEL,
+        model=OPENAI_MODEL,
         created_at=time.time(),
     )
+
+# ************ Respuesta a chat intercativo /chat_stream ****************************
+@app.post("/chat_stream")
+def chat_stream(req: ChatRequest):
+    if client is None:
+        raise HTTPException(status_code=500, detail="OpenAI client no inicializado")
+
+    session_messages = get_session_messages(req.session_id)
+    session_messages.append({"role": "user", "content": req.message})
+    trim_session(session_messages)
+
+    def event_generator():
+        full = []
+        try:
+            stream = client.chat.completions.create(
+                #model=MODEL,
+                model= OPENAI_MODEL,
+                messages=session_messages,
+                temperature=req.temperature,
+                stream=True,
+            )
+
+            for event in stream:
+                delta = event.choices[0].delta
+                chunk = getattr(delta, "content", None)
+                if chunk:
+                    full.append(chunk)
+                    # SSE: cada evento es "data: ...\n\n"
+                    payload = {"type": "chunk", "text": chunk}
+                    yield f"data: {json.dumps(payload, ensure_ascii=False)}\n\n"
+
+            final_text = "".join(full).strip()
+            if final_text:
+                session_messages.append({"role": "assistant", "content": final_text})
+                trim_session(session_messages)
+
+            yield f"data: {json.dumps({'type': 'done'}, ensure_ascii=False)}\n\n"
+
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'message': str(e)}, ensure_ascii=False)}\n\n"
+
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
