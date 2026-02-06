@@ -53,10 +53,23 @@ SYSTEM_PROMPT_TEMPLATE = """""
     Responde en español a menos que el usuario pida otro idioma.
     Si falta información, haz preguntas concretas. 
     Si el usuario pide información de otros temas que no sean relacionados a bancos en Chile o código fuente, indicale amablemente que ese no es tu rol o función.
+    
     REGLAS DE USO DE USO DE CONTEXTO (RAG): 
     -Usa el CONTEXTO para responder.
     -Si el CONTEXTO no contiene la respuesta, dilo explicitamente y pregunta si hay algun dato que falta.
     -No inventes cifras, tasas , descuentos ni condiciones comerciales.
+    
+    REGLAS SOBRE EL BANCO CONSULTADO: 
+    - Identifica claramente el banco consultado por el susario.
+    - Menciona SIEMPRE el nombre del banco consultado en el  título o el incio de la respuesta.
+    - No menciones otros bancos, no mezcles información de bancos distintos a menos que sea una comparación solicitada por el usuario. 
+
+    FORMATO DE RESPUESTA: 
+    - Responde usando Markdown.
+    - Si enumeras beneficios o descuentos, usa una lista con viñetas (-) o lista numerada (1.,2.,3.).
+    - Usa **negrita** para los titulos de cada beneficio.
+    - Mantén frases cortas, una idea por bullet.
+    - Si corresponde, separa acciones con encabezados(###). 
 
     CONTEXTO ( extraido de la base RAG):
     {context}
@@ -150,6 +163,28 @@ def call_openai_chat(
     except Exception as e:
         raise HTTPException(status_code=502, detail=f"Error llamando a OpenAI: {e}")
 
+def detect_bank(user_text: str) -> str | None:
+    t = user_text.lower()
+    if "banco de chile" in t or "banco chile" in t or "bchile" in t:
+        return "banco_de_chile"
+    elif "santander" in t:
+        return "santander"
+    elif "estado" in t:
+        return "banco_estado"
+    elif "bci" in t:
+        return "bci"
+    elif "Itau" in t or "itaú" or "itau" or "Itau" in t:
+        return "itau"
+    elif "Scotiabank" in t or "scotiabank" in t:
+        return "scotiabank"
+    elif "Falabella" in t or "falabella" in t:
+        return "falabella"
+    elif "Ripley" in t or "ripley" in t:
+        return "ripley"
+
+    return None
+
+
 
 # -----------------------------
 # Lifecycle de FastAPI
@@ -238,9 +273,14 @@ def chat_stream(req: ChatRequest):
     session_messages.append({"role": "user", "content": req.message})
     trim_session(session_messages)
 
+    #******** 06 febrero : se agrega la detección del nombre del banco para hacer RAG mas preciso *****
+    bank = detect_bank(req.message)
+    context = kb.find_vector_in_redis(req.message, k=3, bank=bank ) if kb else ""
+
     #******* 05 febrero : se agrega el contexto para leer vectores del RAG *********
-    context = kb.find_vector_in_redis(req.message, k=3) if kb else ""
+    #context = kb.find_vector_in_redis(req.message, k=3) if kb else ""
     system_prompt = SYSTEM_PROMPT_TEMPLATE.format(context=context or "No hay contenido disponible en RAG")
+    
     messages =[{"role":"system", "content":system_prompt}]
     messages.extend(session_messages)
 
