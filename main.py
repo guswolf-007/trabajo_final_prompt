@@ -44,25 +44,47 @@ from  rag_engine.knowlegde_base import KnowledgeBase
 
 #***********************************************************
 
+#************** Para hacer mas efectivo la busqueda sin importar acentos en español ****
+import unicodedata 
+
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY').strip()
 folder_path = "rag"
 
 MAX_TURNS_PER_SESSION = 20  # ajusta si quieres más/menos memoria
-SYSTEM_PROMPT_TEMPLATE = """""
+SYSTEM_PROMPT_GENERAL = """
+    Eres un asistente útil, directo, amable y experto en informacion general sobre bancos en Chile.
+    Responde en español a menos que el usuario pida otro idioma.
+
+    Reglas: 
+    - Responde con conocimiento general.
+    - No inventes cifras exactas (tasas , costos, descuentos) si no tienes una fuente en el mensaje.
+    - Si falta información, haz preguntas concretas. 
+    - Si el usuario pide información de otros temas que no sean relacionados a bancos en Chile o código fuente, indicale amablemente que esa no es tu función.
+    - Si te piden datos específicos o actuales, sugiere revisar el sitio oficial del banco o que el usuario suba o pegue la información  para analizarla.
+    - Mantén el formato re respuesta en Markdown cuando sea útil (listas, encabezados)
+    """.strip()
+
+
+#******** Este Prompt template se usará para extraer la información del RAG ************************
+SYSTEM_PROMPT_RAG_TEMPLATE = """""
     Eres un asistente útil, directo, amable y experto en información de los bancos en Chile. 
     Responde en español a menos que el usuario pida otro idioma.
     Si falta información, haz preguntas concretas. 
     Si el usuario pide información de otros temas que no sean relacionados a bancos en Chile o código fuente, indicale amablemente que ese no es tu rol o función.
     
     REGLAS DE USO DE USO DE CONTEXTO (RAG): 
-    -Usa el CONTEXTO para responder.
+    -Usa SOLO EL CONTEXTO para responder.
     -Si el CONTEXTO no contiene la respuesta, dilo explicitamente y pregunta si hay algun dato que falta.
     -No inventes cifras, tasas , descuentos ni condiciones comerciales.
     
     REGLAS SOBRE EL BANCO CONSULTADO: 
-    - Identifica claramente el banco consultado por el susario.
-    - Menciona SIEMPRE el nombre del banco consultado en el  título o el incio de la respuesta.
-    - No menciones otros bancos, no mezcles información de bancos distintos a menos que sea una comparación solicitada por el usuario. 
+    - Identifica claramente el banco consultado por el usuario.
+    - No mezcles información de bancos distintos a menos que sea una comparación solicitada por el usuario. 
+
+    SI LA PREGUNTA ES COMPARATIVA: 
+    - Usa el CONTEXTO para comparar banco por banco.
+    - Presenta la información en una tabla o lista comparativa.
+    - Si falta información de algún banco, indícalo claramente.
 
     FORMATO DE RESPUESTA: 
     - Responde usando Markdown.
@@ -75,8 +97,41 @@ SYSTEM_PROMPT_TEMPLATE = """""
     {context}
     """.strip()  
 
+INTENT_KEYWORDS = {
+    "costos_mantencion": ["mantención", "mantencion", "comisión", "comision", "costo", "tarifa", "fee"],
+    "descuentos_promos": ["descuento", "promoción", "promocion", "cashback", "2x1", "oferta", "promo", "mes"],
+    "beneficios": ["beneficio", "beneficios", "convenio", "alianza", "puntos", "millas", "cuotas precio contado"],
+    "experiencia_atencion": ["experiencia", "atención", "atencion", "reclamos", "satisfacción", "satisfaccion", "servicio"],
+    "tasas": ["tasa", "interés", "interes", "depósito a plazo", "deposito a plazo", "dap"],
+}
 
 
+
+def _normalize(text: str) -> str:
+    # quita acentos/diacríticos y pasa a minúsculas
+    text = unicodedata.normalize("NFKD", text)
+    text = "".join(c for c in text if not unicodedata.combining(c))
+    return text.lower()
+
+def route_mode(user_text: str) -> str:
+    t = _normalize(user_text)
+
+    for _, kws in INTENT_KEYWORDS.items():
+        # normaliza keywords también
+        if any(_normalize(kw) in t for kw in kws):
+            return "RAG"
+        
+    # heurística suave: si menciona bancos y compara, probablemente es RAG
+    compare_triggers = [" vs ", " versus ", " entre ", " comparar ", " comparacion "]
+    bank_triggers = ["santander", "banco de chile", "bchile", "scotiabank","bci", "estado", "itau","falabella","ripley"]
+    if any(ct in t for ct in compare_triggers) and any(bt in t for bt in bank_triggers):
+        return "RAG"
+    
+    SMALLTALK = ["hola", "buenas", "gracias", "quien eres", "qué eres", "que eres", "ayuda"]
+    if any(s in t for s in SMALLTALK):
+        return "GENERAL"
+
+    return "GENERAL"
 
 
 
@@ -128,7 +183,8 @@ def require_api_key() -> str:
 def get_session_messages(session_id: str) -> List[Dict[str, str]]:
     if session_id not in sessions:
         #sessions[session_id] = [{"role": "system", "content": SYSTEM_PROMPT}]
-        sessions[session_id] = [{"role": "system", "content": SYSTEM_PROMPT_TEMPLATE}]
+        #sessions[session_id] = [{"role": "system", "content": SYSTEM_PROMPT_TEMPLATE}]
+        sessions[session_id] = []
     return sessions[session_id]
 
 
@@ -183,6 +239,31 @@ def detect_bank(user_text: str) -> str | None:
         return "ripley"
 
     return None
+
+
+def detecta_bancos(question: str) -> list[str]:
+    q = _normalize(question)
+    banks = set()
+
+    if "santander" in q:
+        banks.add("santander")
+    if "banco de chile" in q or "banco chile" in q or "bchile" in q:
+        banks.add("banco_de_chile")
+    if ("estado" in q or "bancoestado" in q or "estado" in q and "banco" in q):
+        banks.add("banco_estado")
+    if "bci" in q:
+        banks.add("bci")
+    if "itau" in q or "itaú" in q:
+        banks.add("itau")
+    if "scotiabank" in q or "scotia" in q :
+        banks.add("scotiabank")
+    if "falabella" in q or "falabela" in q or "fallabela" in q:
+        banks.append("falabella")
+    if "ripley" in q or "riplei" in q :
+        banks.append("ripley")
+    
+
+    return list(banks)
 
 
 
@@ -274,12 +355,29 @@ def chat_stream(req: ChatRequest):
     trim_session(session_messages)
 
     #******** 06 febrero : se agrega la detección del nombre del banco para hacer RAG mas preciso *****
-    bank = detect_bank(req.message)
-    context = kb.find_vector_in_redis(req.message, k=3, bank=bank ) if kb else ""
+    mode = route_mode(req.message)
 
-    #******* 05 febrero : se agrega el contexto para leer vectores del RAG *********
-    #context = kb.find_vector_in_redis(req.message, k=3) if kb else ""
-    system_prompt = SYSTEM_PROMPT_TEMPLATE.format(context=context or "No hay contenido disponible en RAG")
+    if mode == "RAG":
+        if kb is None:
+            system_prompt = SYSTEM_PROMPT_GENERAL + "\n\n(Nota: Base RAG no inicializada en este momento.)"
+        else: 
+            banks = detecta_bancos(req.message)
+            if len(banks) == 1:
+                context = kb.find_vector_in_redis(req.message, k=5, bank=banks[0])
+            else:
+                context = kb.find_vector_in_redis(req.message, k=8, bank=None)
+            
+            if not context.strip(): 
+               # aqui va el RAG estricto, si no hay contexto, NO inventes 
+                system_prompt = SYSTEM_PROMPT_RAG_TEMPLATE.format(
+                    context= "No hay contexto disponible en la base RAG para esta consulta.")
+            else: 
+                # Aqui va el RAG estricto, si hay contexto, usa el prompt para el RAG: 
+                system_prompt = SYSTEM_PROMPT_RAG_TEMPLATE.format(context=context)
+    else:
+        # Prompt General, sin RAG
+        system_prompt = SYSTEM_PROMPT_GENERAL
+        
     
     messages =[{"role":"system", "content":system_prompt}]
     messages.extend(session_messages)
