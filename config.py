@@ -1,12 +1,11 @@
 
-import os
+#import os
 
 #***** archivo de configuración para agente de Bancos en Chile ***************
 
 # --- OpenAI Configuration ---
 
 #Esta es la api key personal: 
-OPENAI_API_KEY = os.getenv("OPEN_API_KEY").strip()
 OPENAI_MODEL = "gpt-4o"
 EMBEDDING_MODEL = "text-embedding-ada-002" 
 
@@ -30,12 +29,12 @@ EMBEDDING_MODEL = "text-embedding-ada-002"
 #redis_db = 0
 
 
-# ************* Redis de Gustavo ************************************
-redis_host = "redis-12419.c16.us-east-1-2.ec2.cloud.redislabs.com:12419"
-redis_port = 12419
-redis_password = "ZswdG0PZMxydrvZjeJRWogZpzo316VHU"
-redis_index = "grupo_13"
-redis_username = "default"
-redis_db = 0
+# ************* Redis personal ************************************
+REDIS_HOST = "redis-12419.c16.us-east-1-2.ec2.cloud.redislabs.com"
+REDIS_PORT = 12419
+REDIS_PASSWORD = "ZswdG0PZMxydrvZjeJRWogZpzo316VHU"
+REDIS_INDEX = "grupo_13"
+REDIS_USERNAME = "default"
+REDIS_DB = 0
 
 

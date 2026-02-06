@@ -35,17 +35,37 @@ from fastapi.responses import StreamingResponse
 import json
 
 # ************* Config File ******************** 
-from config import OPENAI_API_KEY, OPENAI_MODEL
+from config import OPENAI_MODEL,REDIS_HOST, REDIS_DB, REDIS_INDEX, REDIS_PASSWORD, REDIS_PORT, REDIS_USERNAME
+# **********************************************
 
-# -----------------------------
-#MODEL = "gpt-4o"
+
+# ************ Clase KnowledgeBase  para hacer RAG *********
+from  rag_engine.knowlegde_base import KnowledgeBase
+
+#***********************************************************
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY').strip()
+folder_path = "rag"
+
 MAX_TURNS_PER_SESSION = 20  # ajusta si quieres más/menos memoria
-SYSTEM_PROMPT = (
-    "Eres un asistente útil, directo, amable y experto en información de los bancos en Chile. "
-    "Responde en español a menos que el usuario pida otro idioma. "
-    "Si falta información, haz preguntas concretas. "
-    "Si el usuario pide información de otros temas que no sean relacionados a bancos en Chile o código fuente, indicale amablemente que ese no es tu rol o función."
-)
+SYSTEM_PROMPT_TEMPLATE = """""
+    Eres un asistente útil, directo, amable y experto en información de los bancos en Chile. 
+    Responde en español a menos que el usuario pida otro idioma.
+    Si falta información, haz preguntas concretas. 
+    Si el usuario pide información de otros temas que no sean relacionados a bancos en Chile o código fuente, indicale amablemente que ese no es tu rol o función.
+    REGLAS DE USO DE USO DE CONTEXTO (RAG): 
+    -Usa el CONTEXTO para responder.
+    -Si el CONTEXTO no contiene la respuesta, dilo explicitamente y pregunta si hay algun dato que falta.
+    -No inventes cifras, tasas , descuentos ni condiciones comerciales.
+
+    CONTEXTO ( extraido de la base RAG):
+    {context}
+    """.strip()  
+
+
+
+
+
 
 # -----------------------------
 # App
@@ -82,8 +102,8 @@ class ChatResponse(BaseModel):
 # -----------------------------
 def require_api_key() -> str:
     
-    api_key = (OPENAI_API_KEY or "").strip()
-    #api_key = os.environ.get("OPENAI_API_KEY", "").strip()
+    #api_key = (OPENAI_API_KEY or "").strip()
+    api_key = os.environ.get("OPENAI_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError(
             "No se encontró OPENAI_API_KEY. "
@@ -94,7 +114,8 @@ def require_api_key() -> str:
 
 def get_session_messages(session_id: str) -> List[Dict[str, str]]:
     if session_id not in sessions:
-        sessions[session_id] = [{"role": "system", "content": SYSTEM_PROMPT}]
+        #sessions[session_id] = [{"role": "system", "content": SYSTEM_PROMPT}]
+        sessions[session_id] = [{"role": "system", "content": SYSTEM_PROMPT_TEMPLATE}]
     return sessions[session_id]
 
 
@@ -131,7 +152,7 @@ def call_openai_chat(
 
 
 # -----------------------------
-# Lifecycle
+# Lifecycle de FastAPI
 # -----------------------------
 
 @app.on_event("startup")
@@ -140,6 +161,17 @@ def on_startup():
     if not OPENAI_API_KEY:
         raise RuntimeError("OPENAI_API_KEY no configurada")
     client = OpenAI(api_key=OPENAI_API_KEY)
+
+    global kb 
+    kb = KnowledgeBase(
+        api_key=OPENAI_API_KEY,
+        redis_host=REDIS_HOST,
+        redis_port=REDIS_PORT, 
+        redis_password=REDIS_PASSWORD, 
+        redis_index=REDIS_INDEX
+    )
+    kb.load_from_folder(folder_path="rag", force_rebuild=True)
+
 
 
 # -----------------------------
@@ -206,13 +238,20 @@ def chat_stream(req: ChatRequest):
     session_messages.append({"role": "user", "content": req.message})
     trim_session(session_messages)
 
+    #******* 05 febrero : se agrega el contexto para leer vectores del RAG *********
+    context = kb.find_vector_in_redis(req.message, k=3) if kb else ""
+    system_prompt = SYSTEM_PROMPT_TEMPLATE.format(context=context or "No hay contenido disponible en RAG")
+    messages =[{"role":"system", "content":system_prompt}]
+    messages.extend(session_messages)
+
+
     def event_generator():
         full = []
         try:
             stream = client.chat.completions.create(
                 #model=MODEL,
                 model= OPENAI_MODEL,
-                messages=session_messages,
+                messages=messages,
                 temperature=req.temperature,
                 stream=True,
             )
