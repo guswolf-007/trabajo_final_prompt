@@ -303,7 +303,7 @@ def on_startup():
 @app.get("/health")
 def health() -> Dict[str, Any]:
     #return {"ok": True, "app": "adv-test", "model": MODEL}
-    return {"ok": True, "app": "adv-test", "model": OPENAI_MODEL}
+    return {"ok": True, "app": "adv-test", "model": config.OPENAI_MODEL}
 
 
 # ************* Respuesta a request http : se entrega index.html *********************
@@ -346,7 +346,7 @@ def chat(req: ChatRequest) -> ChatResponse:
         session_id=req.session_id,
         reply=reply,
         #model=MODEL,
-        model=OPENAI_MODEL,
+        model=config.OPENAI_MODEL,
         created_at=time.time(),
     )
 
@@ -394,7 +394,7 @@ def chat_stream(req: ChatRequest):
         try:
             stream = client.chat.completions.create(
                 #model=MODEL,
-                model= OPENAI_MODEL,
+                model= config.OPENAI_MODEL,
                 messages=messages,
                 temperature=req.temperature,
                 stream=True,
