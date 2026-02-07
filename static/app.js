@@ -1,5 +1,13 @@
 // Tabs
 //const API_URL = "/chat"; 
+// ****************Para manejo de MARKDOWNS : ****************/
+marked.setOptions({
+  gfm: true,
+  breaks: true,
+  headerIds: false,
+  mangle: false,
+});
+//******************************************************** */
 const tabs = document.querySelectorAll('.tab');
 const panels = {
   cards: document.getElementById('panel-cards'),
@@ -196,6 +204,9 @@ if (form && input) {
       const reader = res.body.getReader();
       const decoder = new TextDecoder("utf-8");
       let buffer = "";
+      // ******* El siguiente cambio es para manejar los MARKDOWNS: ****
+      let mdBuffer = "";
+      //****************************************************************
 
       while (true) {
         const { value, done } = await reader.read();
@@ -219,6 +230,35 @@ if (form && input) {
             continue;
           }
 
+          // ********NUevo codigo para manejo de MARKDOWNS ************
+          if (msg.type === "chunk") {
+
+            // elimina placeholder "typing" si existe
+            if (botEl.querySelector(".typing")) {
+              botEl.innerHTML = "";
+            }
+
+            // acumula markdown
+            mdBuffer += msg.text;
+
+            // renderiza markdown -> HTML
+            mdBuffer = mdBuffer
+                      .replace(/:\s*-\s*/g, ":\n- ")
+                      .replace(/\s+-\s+\*\*/g, "\n- **");
+            botEl.innerHTML = marked.parse(mdBuffer);
+
+            // autoscroll
+            const chat = document.getElementById("chat-messages");
+            chat.scrollTop = chat.scrollHeight;
+
+          } else if (msg.type === "error") {
+            mdBuffer += `\n\n❌ **Error:** ${msg.message}`;
+            botEl.innerHTML = marked.parse(mdBuffer);
+          }
+          //******************************************************* */
+
+          
+          /****** 
           if (msg.type === "chunk") {
              if (botEl.querySelector(".typing")){
               botEl.textContent = ""; 
@@ -236,6 +276,7 @@ if (form && input) {
           } else if (msg.type === "done") {
             // opcional: algo visual al terminar
           }
+          *********/ 
         }
       }
     } catch (err) {

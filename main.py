@@ -51,6 +51,7 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY').strip()
 folder_path = "rag"
 
 MAX_TURNS_PER_SESSION = 20  # ajusta si quieres más/menos memoria
+
 SYSTEM_PROMPT_GENERAL = """
     Eres un asistente útil, directo, amable y experto en informacion general sobre bancos en Chile.
     Responde en español a menos que el usuario pida otro idioma.
@@ -61,11 +62,11 @@ SYSTEM_PROMPT_GENERAL = """
     - Si falta información, haz preguntas concretas. 
     - Si el usuario pide información de otros temas que no sean relacionados a bancos en Chile o código fuente, indicale amablemente que esa no es tu función.
     - Si te piden datos específicos o actuales, sugiere revisar el sitio oficial del banco o que el usuario suba o pegue la información  para analizarla.
-    - Mantén el formato re respuesta en Markdown cuando sea útil (listas, encabezados)
+    - Mantén el formato de respuesta en Markdown cuando sea útil (listas, encabezados)
     """.strip()
 
 
-#******** Este Prompt template se usará para extraer la información del RAG ************************
+#******** Este Prompt template se usará únicamente para extraer la información del RAG ************************
 SYSTEM_PROMPT_RAG_TEMPLATE = """""
     Eres un asistente útil, directo, amable y experto en información de los bancos en Chile. 
     Responde en español a menos que el usuario pida otro idioma.
@@ -86,12 +87,16 @@ SYSTEM_PROMPT_RAG_TEMPLATE = """""
     - Presenta la información en una tabla o lista comparativa.
     - Si falta información de algún banco, indícalo claramente.
 
-    FORMATO DE RESPUESTA: 
-    - Responde usando Markdown.
-    - Si enumeras beneficios o descuentos, usa una lista con viñetas (-) o lista numerada (1.,2.,3.).
-    - Usa **negrita** para los titulos de cada beneficio.
-    - Mantén frases cortas, una idea por bullet.
-    - Si corresponde, separa acciones con encabezados(###). 
+    FORMATO OBLIGATORIO DE RESPUESTA: 
+    - Cada sección debe comenzar en una nueva línea.
+    - Después de un encabezado (### o **Título:**) SIEMPRE agrega un salto de línea.
+    - Las listas deben usar viñetas (-) en líneas separadas, nunca en la misma línea del texto.
+    - No escribas "-" después de dos puntos (:).
+    - Usa este patrón exacto:
+
+    ### Título de sección
+    - **Ítem 1:** descripción
+    - **Ítem 2:** descripción 
 
     CONTEXTO ( extraido de la base RAG):
     {context}
@@ -286,7 +291,7 @@ def on_startup():
         redis_password=REDIS_PASSWORD, 
         redis_index=REDIS_INDEX
     )
-    kb.load_from_folder(folder_path="rag", force_rebuild=True)
+    kb.load_from_folder(folder_path="rag_migrated", force_rebuild=True)
 
 
 

@@ -1,4 +1,4 @@
-# Banco: Banco BCI (Real)
+# Banco: Banco BCI 
 
 ## Identificación
 - **banco_id:** 4
@@ -20,13 +20,23 @@
 
 ## Beneficios (tarjeta/cuenta)
 - **desc_restaurants:** Sí
+> **Restaurantes incluidos:**
+> * Los Vikingos restaurant: 50% descuento de Lunes a Jueves
+> * Bendito Bar: 30% descuento todos los martes de febrero
+> * Fratello Trattoria: 40% descuento todos los jueves de febrero
+> * Los Cabnallas Bar : 50% de descuento todo febrero.
+
 - **cuotas_precio_contado:** Sí
+> * Paga todo Educación en 3 cuotas sin interes, presencial y online a nivel nacional.
 - **beneficios_retail:** Sí
 - **beneficios_aerolineas:** Parcial
+>* Alianza con Visa : clientes tarjetas de crédito Visa acceden a los servicios premium de
+Digital Concierge, Servicios de emergencia médica internacional, Seguro de equipajes descuentos en hoteles de Visa Luxury hotel collection .
+
 - **programa_puntos:** BCI Puntos
 
 ## Experiencia y atención (1–5)
-- **nivel_atencion_fisica_1_5:** 4
+- **nivel_atencion_fisica_1_5:** 5
 - **experiencia_digital_1_5:** 4
 - **calidad_app_1_5:** 4
 - **evaluacion_antifraudes_1_5:** 4

@@ -21,12 +21,12 @@ EMBEDDING_MODEL = "text-embedding-ada-002"
 
 # ************* Redis database del grupo 09 ***************************
 
-#redis_host = "redis-10429.c56.east-us.azure.cloud.redislabs.com"
-#redis_port = 10429
-#redis_username = "default"
-#redis_password = "ib29eo12rc1QBSBfBJihvtYjEn5ZmLSh"
-#redis_index = "grupo_13"
-#redis_db = 0
+#REDIS_HOST = "redis-10429.c56.east-us.azure.cloud.redislabs.com"
+#REDIS_PORT = 10429
+#REDIS_USERNAME = "default"
+#REDIS_PASSWORD = "ib29eo12rc1QBSBfBJihvtYjEn5ZmLSh"
+#REDIS_INDEX = "grupo_13"
+#REDIS_DB = 0
 
 
 # ************* Redis personal ************************************

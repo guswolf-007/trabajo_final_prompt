@@ -1,9 +1,7 @@
-# Banco: Banco Falabella (Real)
+# Banco: Banco Falabella 
 
 ## Identificación
-- **banco_id:** 7
-- **tipo_banco:** Real
-- **segmentos_membresias:** Corriente Falabella
+- **segmentos_membresias:** CMR / CMR Plus / CMR Gold 
 
 ## Requisitos
 - **renta_minima_clp:** $500.000
@@ -14,29 +12,42 @@
 - **sucursales_rm:** 60
 
 ## Costos
-- **mantencion_cc_clp:** $3.000
-- **mantencion_tc_clp:** $4.000
+- ** mantencion_cuenta_corriente_clp:** $3.000
+- ** mantencion_tarjeta_credito_clp:** $4.000
 - **mantencion_total_estimado_clp:** $7.000
 
 ## Beneficios (tarjeta/cuenta)
-- **desc_restaurants:** Sí
+- ** descuentos_restaurants:** Sí
+
+ **Restaurantes incluidos:**
+> * Restaurante La Joya: 10% descuento todos los jueves de febrero
+> * EL Mamut : 20% descuento todos los Lunes y martes  de febrero
+> * Restaurante KFC : 30% descuento todos los jueves de febrero
+> * La Joyita Burger : 30% de descuento todos los viernes.
+
 - **cuotas_precio_contado:** Sí
-- **beneficios_retail:** Muy fuerte
+Paga todo en 3,6,12 cuotas sin interés en todas nuestras tiendas Falabella y falabella.com
+- **beneficios_retail:** Si, Muy fuerte
+> * Paga con Visa CMR y tienes despacho gratis comprando en tottus.cl
+> * Paga con Visa CMR y tienes descuentos exclusivos en todas nuestras tiendas falabella.com
+> * Paga con Visa CMR y tienes descuentos exclusivos en todas nuestras tiendas sodimac.cl
+
+
 - **beneficios_aerolineas:** No
 - **programa_puntos:** CMR Puntos
 
 ## Experiencia y atención (1–5)
 - **nivel_atencion_fisica_1_5:** 3
-- **experiencia_digital_1_5:** 4
+- **experiencia_digital_1_5:** 3
 - **calidad_app_1_5:** 4
 - **evaluacion_antifraudes_1_5:** 4
 
 ## Tags de recuperación (derivados)
-- **tags:** restaurants, buena_app, buen_antifraude, buena_experiencia_digital
+- **tags:** restaurants, regular_app, debil_antifraude, buena_experiencia_digital, mala_experiencia_digital
 
 ## Texto resumen para embeddings
-Banco Falabella es un banco (Real) con segmentos/membresías: Corriente Falabella. Requiere renta mínima $500.000.
-Costos: mantención CC $3.000 y TC $4.000 (total estimado $7.000).
+Banco Falabella es un banco con segmentos/membresías: Corriente Falabella. Requiere renta mínima $500.000.
+Costos: mantención Cuenta Corriente:  $3.000 y Tarjeta de Crédito $4.000 (total estimado $7.000).
 Beneficios: restaurants=Sí, cuotas precio contado=Sí, retail=Muy fuerte, aerolíneas=No, puntos=CMR Puntos.
-Atención: sucursales nacional=110 y RM=60.
-Scores (1–5): atención física=3, experiencia digital=4, app=4, antifraude=4.
+Atención: sucursales nacional=110 y Region Metropolitana=60.
+Scores (1–5): atención física=3, experiencia digital=3, app=2, antifraude=3.

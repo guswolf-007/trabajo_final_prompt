@@ -1,9 +1,7 @@
-# Banco: Banco Ripley (Real)
+# Banco: Banco Ripley 
 
 ## Identificación
-- **banco_id:** 8
-- **tipo_banco:** Real
-- **segmentos_membresias:** Corriente Ripley
+- **segmentos_membresias:** Ripley
 
 ## Requisitos
 - **renta_minima_clp:** $500.000
@@ -22,6 +20,8 @@
 - **desc_restaurants:** No
 - **cuotas_precio_contado:** No
 - **beneficios_retail:** Fuerte
+> * Paga con tarjeta Ripley Black y tienes descuentos exclusivos en todas nuestras tiendas Ripley.cl
+
 - **beneficios_aerolineas:** No
 - **programa_puntos:** Ripley Puntos
 
