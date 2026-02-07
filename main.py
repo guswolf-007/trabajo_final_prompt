@@ -35,7 +35,8 @@ from fastapi.responses import StreamingResponse
 import json
 
 # ************* Config File ******************** 
-from config import OPENAI_MODEL,REDIS_HOST, REDIS_DB, REDIS_INDEX, REDIS_PASSWORD, REDIS_PORT, REDIS_USERNAME
+import config
+#from config import OPENAI_MODEL,REDIS_HOST, REDIS_DB, REDIS_INDEX, REDIS_PASSWORD, REDIS_PORT, REDIS_USERNAME
 # **********************************************
 
 
@@ -285,13 +286,13 @@ def on_startup():
 
     global kb 
     kb = KnowledgeBase(
-        api_key=OPENAI_API_KEY,
-        redis_host=REDIS_HOST,
-        redis_port=REDIS_PORT, 
-        redis_password=REDIS_PASSWORD, 
-        redis_index=REDIS_INDEX
+        api_key=os.environ["OPENAI_API_KEY"],
+        redis_host=config.REDIS_HOST,
+        redis_port=config.REDIS_PORT, 
+        redis_password=config.REDIS_PASSWORD, 
+        redis_index=config.REDIS_INDEX
     )
-    kb.load_from_folder(folder_path="rag_migrated", force_rebuild=True)
+    kb.load_from_folder(folder_path="rag_migrated", force_rebuild=False)
 
 
 

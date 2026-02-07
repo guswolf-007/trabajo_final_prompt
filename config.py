@@ -5,36 +5,19 @@
 
 # --- OpenAI Configuration ---
 
-#Esta es la api key personal: 
-OPENAI_MODEL = "gpt-4o"
-EMBEDDING_MODEL = "text-embedding-ada-002" 
+import os
 
-# --- Redis Configuration ---
-# Redis del grupo 13 : 
-#redis_host = "redis-15094.c282.east-us-mz.azure.cloud.redislabs.com"
-#redis_port = 15094
-#redis_password = "jJftzSZ0CeyNBUEDEemJwc1C8pOPOFBR"
-#redis_index = "grupo_13"
-#redis_username = "default"
-#redis_db = 0
+OPENAI_MODEL = os.getenv("OPENAI_MODEL", "gpt-4o")
+EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "text-embedding-ada-002")
 
+REDIS_HOST = os.getenv("REDIS_HOST", "")
+REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
+REDIS_INDEX = os.getenv("REDIS_INDEX", "grupo_13")
+REDIS_USERNAME = os.getenv("REDIS_USERNAME", "default")
+REDIS_DB = int(os.getenv("REDIS_DB", "0"))
 
-# ************* Redis database del grupo 09 ***************************
+# secreto: nunca hardcodear
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "")
 
-#REDIS_HOST = "redis-10429.c56.east-us.azure.cloud.redislabs.com"
-#REDIS_PORT = 10429
-#REDIS_USERNAME = "default"
-#REDIS_PASSWORD = "ib29eo12rc1QBSBfBJihvtYjEn5ZmLSh"
-#REDIS_INDEX = "grupo_13"
-#REDIS_DB = 0
-
-
-# ************* Redis personal ************************************
-REDIS_HOST = "redis-12419.c16.us-east-1-2.ec2.cloud.redislabs.com"
-REDIS_PORT = 12419
-REDIS_PASSWORD = "ZswdG0PZMxydrvZjeJRWogZpzo316VHU"
-REDIS_INDEX = "grupo_13"
-REDIS_USERNAME = "default"
-REDIS_DB = 0
 
 
